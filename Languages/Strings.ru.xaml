@@ -1,0 +1,32 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="Str_Menu">Меню</sys:String>
+    <sys:String x:Key="Str_Saves">История</sys:String>
+    <sys:String x:Key="Str_Guide">Гайд</sys:String>
+    <sys:String x:Key="Str_Settings">Настройки</sys:String>
+    <sys:String x:Key="Str_Theme">Тема</sys:String>
+    <sys:String x:Key="Str_ThemeBlue">Полуночный синий</sys:String>
+    <sys:String x:Key="Str_ThemeCharcoal">Тёмный уголь</sys:String>
+    <sys:String x:Key="Str_ThemeEmerald">Глубокий изумруд</sys:String>
+    <sys:String x:Key="Str_Language">Язык</sys:String>
+    <sys:String x:Key="Str_LangRu">Русский</sys:String>
+    <sys:String x:Key="Str_LangEn">English</sys:String>
+    <sys:String x:Key="Str_About">О программе</sys:String>
+    <sys:String x:Key="Str_MakeStages">Создать блицкриг</sys:String>
+    <sys:String x:Key="Str_StartPoses">Стартпозы</sys:String>
+    <sys:String x:Key="Str_Stages">Блицкриг</sys:String>
+    <sys:String x:Key="Str_CopyPoses">Скопировать стартпозы</sys:String>
+    <sys:String x:Key="Str_CopyStages">Скопировать блицкриг</sys:String>
+    <sys:String x:Key="Str_PastePoses">Вставить стартпозы</sys:String>
+    <sys:String x:Key="Str_DeleteAll">Стереть всё</sys:String>
+    <sys:String x:Key="Str_Runs">Раны</sys:String>
+    <sys:String x:Key="Str_Check">✔</sys:String>
+    <sys:String x:Key="Str_Notes">Заметки</sys:String>
+    <sys:String x:Key="Str_LevelName1">Уровень 1</sys:String>
+    <sys:String x:Key="Str_LevelName2">Уровень 2</sys:String>
+    <sys:String x:Key="Str_Generator">Генератор</sys:String>
+    <sys:String x:Key="Str_ColumnRun">Раны</sys:String>
+    <sys:String x:Key="Str_ColumnAttempts">Попытки</sys:String>
+    <sys:String x:Key="Str_ColumnNote">Заметки</sys:String>
+</ResourceDictionary>

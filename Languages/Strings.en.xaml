@@ -1,0 +1,32 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="Str_Menu">Menu</sys:String>
+    <sys:String x:Key="Str_Saves">Saves</sys:String>
+    <sys:String x:Key="Str_Guide">Guide</sys:String>
+    <sys:String x:Key="Str_Settings">Settings</sys:String>
+    <sys:String x:Key="Str_Theme">Theme</sys:String>
+    <sys:String x:Key="Str_ThemeBlue">Midnight Blue</sys:String>
+    <sys:String x:Key="Str_ThemeCharcoal">Dark Charcoal</sys:String>
+    <sys:String x:Key="Str_ThemeEmerald">Deep Emerald</sys:String>
+    <sys:String x:Key="Str_Language">Language</sys:String>
+    <sys:String x:Key="Str_LangRu">Русский</sys:String>
+    <sys:String x:Key="Str_LangEn">English</sys:String>
+    <sys:String x:Key="Str_About">About</sys:String>
+    <sys:String x:Key="Str_MakeStages">Make Blitzkrieg</sys:String>
+    <sys:String x:Key="Str_StartPoses">Start Poses</sys:String>
+    <sys:String x:Key="Str_Stages">Blitzkrieg</sys:String>
+    <sys:String x:Key="Str_CopyPoses">Copy Startposes</sys:String>
+    <sys:String x:Key="Str_CopyStages">Copy Blitzkrieg</sys:String>
+    <sys:String x:Key="Str_PastePoses">Paste Startposes</sys:String>
+    <sys:String x:Key="Str_DeleteAll">Clear All</sys:String>
+    <sys:String x:Key="Str_Runs">Runs</sys:String>
+    <sys:String x:Key="Str_Check">✔</sys:String>
+    <sys:String x:Key="Str_Notes">Notes</sys:String>
+    <sys:String x:Key="Str_LevelName1">Level Name 1</sys:String>
+    <sys:String x:Key="Str_LevelName2">Level Name 2</sys:String>
+    <sys:String x:Key="Str_Generator">Generator</sys:String>
+    <sys:String x:Key="Str_ColumnRun">Run</sys:String>
+    <sys:String x:Key="Str_ColumnAttempts">Attempts</sys:String>
+    <sys:String x:Key="Str_ColumnNote">Notes</sys:String>
+</ResourceDictionary>

@@ -1,0 +1,624 @@
+<Window x:Class="BlitzkriegWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BlitzkriegWPF"
+        mc:Ignorable="d"
+        Title="BlitzkriegWPF" Height="650" Width="1050"
+        MinWidth="950" MinHeight="550"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        FontFamily="Segoe UI"
+        PreviewKeyDown="Window_PreviewKeyDown">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+        <ItemsPanelTemplate x:Key="TwoColumnTablesPanel">
+            <UniformGrid Columns="2"/>
+        </ItemsPanelTemplate>
+
+        <ItemsPanelTemplate x:Key="HorizontalTablesPanel">
+            <StackPanel Orientation="Horizontal"/>
+        </ItemsPanelTemplate>
+
+        <!-- Кастомный CheckBox со стилем для мгновенного клика -->
+        <Style x:Key="CustomCheckBoxStyle" TargetType="CheckBox">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Border x:Name="border" Width="18" Height="18" CornerRadius="4"
+                                Background="{DynamicResource ControlBackgroundBrush}" 
+                                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1.5">
+                            <Path x:Name="checkMark" Data="M 3 8 L 7 12 L 15 4" 
+                                  Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="2" 
+                                  StrokeLineJoin="Round" Visibility="Collapsed"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource AccentHoverBrush}"/>
+                                <Setter TargetName="checkMark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- СТИЛЬ ДЛЯ МЕНЮ -->
+        <Style TargetType="MenuItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border x:Name="templateRoot" 
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                SnapsToDevicePixels="true"
+                                CornerRadius="4">
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ContentPresenter x:Name="HeaderPresenter" 
+                                                  Grid.Column="0"
+                                                  Content="{TemplateBinding Header}" 
+                                                  Margin="{TemplateBinding Padding}" 
+                                                  VerticalAlignment="Center" 
+                                                  HorizontalAlignment="Left"/>
+
+                                <Path x:Name="ArrowPath" 
+                                      Grid.Column="1" 
+                                      Data="M 0,0 L 4,4 L 0,8 Z" 
+                                      Fill="{TemplateBinding Foreground}" 
+                                      Margin="8,0,10,0" 
+                                      VerticalAlignment="Center" 
+                                      SnapsToDevicePixels="true" 
+                                      Visibility="Collapsed"/>
+
+                                <Popup x:Name="Popup" AllowsTransparency="True" Focusable="false" IsOpen="{TemplateBinding IsSubmenuOpen}" PopupAnimation="Fade" Placement="Bottom">
+                                    <Border x:Name="SubMenuBorder" Background="{DynamicResource ControlBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="4" Margin="2">
+                                        <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                            <StackPanel x:Name="SubMenuStack" IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" KeyboardNavigation.TabNavigation="Cycle"/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Role" Value="SubmenuHeader">
+                                <Setter TargetName="Popup" Property="Placement" Value="Right"/>
+                                <Setter TargetName="ArrowPath" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="Role" Value="TopLevelHeader">
+                                <Setter TargetName="Popup" Property="Placement" Value="Bottom"/>
+                            </Trigger>
+                            <Trigger Property="Role" Value="TopLevelItem">
+                                <Setter TargetName="Popup" Property="Placement" Value="Bottom"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="templateRoot" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{DynamicResource ControlBackgroundBrush}" 
+                                BorderBrush="{DynamicResource BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource AccentHoverBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DarkTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="AcceptsReturn" Value="True"/>
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+        </Style>
+
+        <!-- СТИЛЬ РЕДАКТИРОВАНИЯ ЯЧЕЕК DATAGRID (БЕЗ БЕЛОЙ ПОДСВЕТКИ) -->
+        <Style x:Key="CleanCellEditingStyle" TargetType="TextBox" BasedOn="{StaticResource DarkTextBoxStyle}">
+            <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="4,1"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="AcceptsReturn" Value="False"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!-- При начале редактирования заметки не заставляем DataGrid автоматически
+             проматываться вправо к редактируемой ячейке. Пользователь сам управляет
+             горизонтальной прокруткой. -->
+        <Style x:Key="NoteEditingStyle" TargetType="TextBox" BasedOn="{StaticResource CleanCellEditingStyle}"/>
+
+        <!-- ТОНКИЕ ПОЛЗУНКИ SCROLLBAR (6px) -->
+        <Style x:Key="ScrollBarThumbStyle" TargetType="Thumb">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Border x:Name="thumbBorder" 
+                                Background="{DynamicResource BorderBrush}" 
+                                CornerRadius="3" 
+                                Margin="0"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="thumbBorder" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="True">
+                                <Setter TargetName="thumbBorder" Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid x:Name="Bg" Background="Transparent" SnapsToDevicePixels="true">
+                            <Track x:Name="PART_Track" Orientation="{TemplateBinding Orientation}" IsDirectionReversed="False">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton x:Name="PART_DecreaseRepeatButton" Focusable="False" Background="Transparent" BorderThickness="0" Command="ScrollBar.PageLeftCommand">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton">
+                                                <Border Background="Transparent"/>
+                                            </ControlTemplate>
+                                        </RepeatButton.Template>
+                                    </RepeatButton>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton x:Name="PART_IncreaseRepeatButton" Focusable="False" Background="Transparent" BorderThickness="0" Command="ScrollBar.PageRightCommand">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton">
+                                                <Border Background="Transparent"/>
+                                            </ControlTemplate>
+                                        </RepeatButton.Template>
+                                    </RepeatButton>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb x:Name="PART_Thumb" Style="{StaticResource ScrollBarThumbStyle}"/>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Orientation" Value="Vertical">
+                                <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="True"/>
+                                <Setter TargetName="PART_DecreaseRepeatButton" Property="Command" Value="ScrollBar.PageUpCommand"/>
+                                <Setter TargetName="PART_IncreaseRepeatButton" Property="Command" Value="ScrollBar.PageDownCommand"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Height" Value="6"/>
+                    <Setter Property="Width" Value="Auto"/>
+                </Trigger>
+                <Trigger Property="Orientation" Value="Vertical">
+                    <Setter Property="Width" Value="6"/>
+                    <Setter Property="Height" Value="Auto"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стилизация DataGrid c выделением границей таблицы вместо белой -->
+        <Style TargetType="DataGridRow">
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <EventSetter Event="RequestBringIntoView" Handler="DataGridCell_RequestBringIntoView"/>
+            <Setter Property="Padding" Value="6,2"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                            <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="{DynamicResource PanelBackgroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="RowBackground" Value="{DynamicResource GridRowBrush}"/>
+            <Setter Property="AlternatingRowBackground" Value="{DynamicResource GridAltRowBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="GridLinesVisibility" Value="All"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="VerticalGridLinesBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+            <Setter Property="CanUserSortColumns" Value="False"/>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <!-- ШАБЛОН ДИНАМИЧЕСКОЙ ТАБЛИЦЫ УРОВНЯ -->
+        <DataTemplate DataType="{x:Type local:LevelTableViewModel}">
+            <Border Width="{Binding TableWidth, RelativeSource={RelativeSource AncestorType=Window}}" 
+                    Margin="6,0,6,0" 
+                    Background="{DynamicResource PanelBackgroundBrush}" 
+                    BorderBrush="{DynamicResource BorderBrush}" 
+                    BorderThickness="1" 
+                    CornerRadius="8" 
+                    Padding="8"
+                    HorizontalAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Шапка таблицы с редактированием названия и кнопкой удаления -->
+                    <Grid Grid.Row="0" Margin="0,0,0,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Кнопка Влево (Только при скрытом генераторе) -->
+                        <Button Grid.Column="0" Content=" ◀ " Click="MoveTableLeft_Click" Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" FontSize="10"
+                                Visibility="{Binding DataContext.IsGeneratorHidden, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                        <!-- Переименование по двойному клику (Заблокирован вертикальный скролл) -->
+                        <Border Grid.Column="1" Background="{DynamicResource ControlBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Height="26" Margin="6,0" CornerRadius="4"
+                                MouseLeftButtonDown="LevelName_MouseLeftButtonDown">
+                            <Grid>
+                                <TextBlock Text="{Binding LevelName}" Foreground="{DynamicResource TextPrimaryBrush}" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsEditingName}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBox Text="{Binding LevelName, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="13"
+                                         Padding="2,0" AcceptsReturn="False" TextWrapping="NoWrap"
+                                         ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         PreviewMouseWheel="TableTitleTextBox_PreviewMouseWheel"
+                                         LostFocus="LevelNameTextBox_LostFocus" KeyDown="LevelNameTextBox_KeyDown">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource DarkTextBoxStyle}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsEditingName}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </Grid>
+                        </Border>
+
+                        <!-- Кнопка Удаления (Только при скрытом генераторе) -->
+                        <Button Grid.Column="2" Content=" ✕ " Click="DeleteTable_Click" Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" FontSize="10" Foreground="#EF4444" Margin="0,0,6,0"
+                                Visibility="{Binding DataContext.IsGeneratorHidden, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                        <!-- Кнопка Вправо (Только при скрытом генераторе) -->
+                        <Button Grid.Column="3" Content=" ▶ " Click="MoveTableRight_Click" Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" FontSize="10"
+                                Visibility="{Binding DataContext.IsGeneratorHidden, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </Grid>
+
+                    <!-- DataGrid с мгновенными галочками, темным редактированием и скроллом -->
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Runs}" AutoGenerateColumns="False" MinHeight="180"
+                              ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              ScrollViewer.CanContentScroll="False"
+                              ScrollViewer.ScrollChanged="DataGrid_ScrollChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="80" Binding="{Binding Run, UpdateSourceTrigger=PropertyChanged}" EditingElementStyle="{StaticResource CleanCellEditingStyle}">
+                                <DataGridTextColumn.Header>
+                                    <TextBlock Text="{DynamicResource Str_ColumnRun}"/>
+                                </DataGridTextColumn.Header>
+                            </DataGridTextColumn>
+
+                            <DataGridTemplateColumn Width="45">
+                                <DataGridTemplateColumn.Header>
+                                    <TextBlock Text="✓"/>
+                                </DataGridTemplateColumn.Header>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CustomCheckBoxStyle}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTextColumn Width="80" Binding="{Binding Attempts, UpdateSourceTrigger=PropertyChanged}" EditingElementStyle="{StaticResource CleanCellEditingStyle}">
+                                <DataGridTextColumn.Header>
+                                    <TextBlock Text="{DynamicResource Str_ColumnAttempts}"/>
+                                </DataGridTextColumn.Header>
+                            </DataGridTextColumn>
+
+                            <DataGridTextColumn Width="400" Binding="{Binding Note, UpdateSourceTrigger=PropertyChanged}" EditingElementStyle="{StaticResource NoteEditingStyle}">
+                                <DataGridTextColumn.Header>
+                                    <TextBlock x:Name="NotesHeaderTextBlock" Text="{DynamicResource Str_ColumnNote}" HorizontalAlignment="Center"/>
+                                </DataGridTextColumn.Header>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource WindowBackgroundBrush}">
+        <Border.LayoutTransform>
+            <ScaleTransform x:Name="AppScaleTransform" ScaleX="1.0" ScaleY="1.0"/>
+        </Border.LayoutTransform>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- ШАПКА -->
+            <Grid Grid.Row="0" Background="{DynamicResource ControlBackgroundBrush}" MouseLeftButtonDown="WindowHeader_MouseLeftButtonDown">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Blitzkrieg v0.1.0-alpha" Foreground="{DynamicResource TextPrimaryBrush}" 
+                           VerticalAlignment="Bottom" Margin="12,0,10,8" FontWeight="Bold" FontSize="12"/>
+
+                <!-- МЕНЮ -->
+                <Menu x:Name="AppMenu" Grid.Column="1" Background="Transparent" Foreground="{DynamicResource TextPrimaryBrush}" 
+                      VerticalAlignment="Center" Padding="0" WindowChrome.IsHitTestVisibleInChrome="True">
+                    <MenuItem x:Name="SavesToggleMenuItem" Header="{DynamicResource Str_Saves}" Click="SavesToggle_Click"/>
+                    <MenuItem Header="{DynamicResource Str_Guide}"/>
+                    <MenuItem Header="{DynamicResource Str_Settings}">
+                        <MenuItem Header="{DynamicResource Str_Theme}">
+                            <MenuItem Header="{DynamicResource Str_ThemeBlue}" Click="ThemeBlue_Click"/>
+                            <MenuItem Header="{DynamicResource Str_ThemeCharcoal}" Click="ThemeCharcoal_Click"/>
+                            <MenuItem Header="{DynamicResource Str_ThemeEmerald}" Click="ThemeEmerald_Click"/>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem Header="{DynamicResource Str_Language}">
+                            <MenuItem Header="{DynamicResource Str_LangRu}" Click="LangRu_Click"/>
+                            <MenuItem Header="{DynamicResource Str_LangEn}" Click="LangEn_Click"/>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="{DynamicResource Str_About}"/>
+                </Menu>
+
+                <!-- УПРАВЛЕНИЕ МАСШТАБОМ И КНОПКИ ОКНА -->
+                <StackPanel Grid.Column="3" Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,6,0">
+                        <Button Width="26" Height="24" Content="-" Click="ZoomOut_Click" Style="{StaticResource RoundedButtonStyle}" Margin="2,0" ToolTip="Уменьшить масштаб (Ctrl + -)"/>
+                        <TextBlock x:Name="ZoomIndicatorText" Text="100%" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="2,0" FontSize="11" Width="36" TextAlignment="Center"/>
+                        <Button Width="26" Height="24" Content="+" Click="ZoomIn_Click" Style="{StaticResource RoundedButtonStyle}" Margin="2,0" ToolTip="Увеличить масштаб (Ctrl + +)"/>
+                    </StackPanel>
+
+                    <Separator Width="1" Background="{DynamicResource BorderBrush}" Margin="4,6"/>
+
+                    <Button Width="45" Height="32" Background="Transparent" Foreground="{DynamicResource TextPrimaryBrush}" BorderThickness="0" Click="MinimizeButton_Click" Cursor="Hand">
+                        <TextBlock Text="—" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10"/>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#334155"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Width="45" Height="32" Background="Transparent" Foreground="{DynamicResource TextPrimaryBrush}" BorderThickness="0" Click="MaximizeButton_Click" Cursor="Hand">
+                        <TextBlock Text="🗖" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10"/>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#334155"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Width="45" Height="32" Background="Transparent" Foreground="{DynamicResource TextPrimaryBrush}" BorderThickness="0" Click="CloseButton_Click" Cursor="Hand">
+                        <TextBlock Text="✕" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11"/>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#EF4444"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- РАБОЧАЯ ОБЛАСТЬ -->
+            <Grid Grid.Row="1" Margin="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="LeftColumn" Width="260"/>
+                    <ColumnDefinition x:Name="SplitterColumn" Width="15"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ЛЕВАЯ ПАНЕЛЬ (ГЕНЕРАТОР) -->
+                <Grid x:Name="GeneratorPanel" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Background="{DynamicResource ControlBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Height="24" Margin="0,0,0,4" CornerRadius="4">
+                                <TextBlock Text="{DynamicResource Str_StartPoses}" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" FontWeight="Medium"/>
+                            </Border>
+                            <TextBox x:Name="StartPosesTextBox" Grid.Row="1" Style="{StaticResource DarkTextBoxStyle}"/>
+                        </Grid>
+
+                        <Grid Grid.Column="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Background="{DynamicResource ControlBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Height="24" Margin="0,0,0,4" CornerRadius="4">
+                                <TextBlock Text="{DynamicResource Str_Stages}" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" FontWeight="Medium"/>
+                            </Border>
+                            <TextBox x:Name="BlitzkriegTextBox" Grid.Row="1" Style="{StaticResource DarkTextBoxStyle}"
+                                     IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+                                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"/>
+                        </Grid>
+                    </Grid>
+
+                    <Button Grid.Row="1" Style="{StaticResource RoundedButtonStyle}" Height="40" Margin="0,0,0,12" Click="MakeBlitzkriegButton_Click">
+                        <TextBlock Text="{DynamicResource Str_MakeStages}" FontSize="13" FontWeight="SemiBold"/>
+                    </Button>
+
+                    <UniformGrid Grid.Row="2" Columns="2" Rows="2" Height="90">
+                        <Button Style="{StaticResource RoundedButtonStyle}" Margin="3" Click="CopyStartPosesButton_Click">
+                            <TextBlock Text="{DynamicResource Str_CopyPoses}" FontSize="11" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </Button>
+                        <Button Style="{StaticResource RoundedButtonStyle}" Margin="3" Click="CopyBlitzkriegButton_Click">
+                            <TextBlock Text="{DynamicResource Str_CopyStages}" FontSize="11" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </Button>
+                        <Button Style="{StaticResource RoundedButtonStyle}" Margin="3" Click="PasteStartPosesButton_Click">
+                            <TextBlock Text="{DynamicResource Str_PastePoses}" FontSize="11" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </Button>
+                        <Button Style="{StaticResource RoundedButtonStyle}" Margin="3" Click="ClearGeneratorButton_Click">
+                            <TextBlock Text="{DynamicResource Str_DeleteAll}" FontSize="11" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </Button>
+                    </UniformGrid>
+                </Grid>
+
+                <!-- ПРАВАЯ ПАНЕЛЬ С ТАБЛИЦАМИ -->
+                <Border Background="{DynamicResource PanelBackgroundBrush}" CornerRadius="8" Padding="10" Grid.Column="2">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Текстовый тулбар -->
+                        <Border Grid.Row="0" Background="{DynamicResource ControlBackgroundBrush}" CornerRadius="6" Padding="6,4" Margin="0,0,0,10" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Content=" &lt; " Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" Margin="2,0"/>
+                                <Button Content=" &gt; " Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" Margin="2,0"/>
+                                <Separator Width="1" Background="{DynamicResource BorderBrush}" Margin="6,2"/>
+                                <Button Content=" B " FontWeight="Bold" Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" Margin="2,0"/>
+                                <Button Content=" I " FontStyle="Italic" Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" Margin="2,0"/>
+                                <Button Content=" S " Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" Margin="2,0"/>
+                                <Button Content=" A " Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" Margin="2,0"/>
+                                <Button Content=" 🖌 " Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" Margin="2,0"/>
+                                <Button Content=" ≡ " Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" Margin="2,0"/>
+                                <Separator Width="1" Background="{DynamicResource BorderBrush}" Margin="6,2"/>
+                                <TextBlock Text="Font" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="6,0,4,0" FontSize="12"/>
+                                <TextBlock Text=" - 12 + " Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" FontSize="12"/>
+                            </StackPanel>
+                        </Border>
+
+                        <ScrollViewer x:Name="TableScrollViewer" Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" Padding="0,0,0,4">
+                            <ItemsControl x:Name="TablesItemsControl" ItemsPanel="{StaticResource TwoColumnTablesPanel}"/>
+                        </ScrollViewer>
+
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
