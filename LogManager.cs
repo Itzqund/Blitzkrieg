@@ -1,14 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
+using Microsoft.Data.Sqlite;
 
-namespace BlitzkriegWPF
+namespace BlitzkriegWPF;
+
+internal static class LogManager
 {
-    class LogManager
+    public static void LogAction(string logMessage, int idLogType)
     {
-        public void LogAction(string logMessage, int idLogType)
+        try
         {
-
+            // Ошибка записи журнала не должна мешать основной работе. Интеграция должна работать
+            // даже если в старой базе нет начальных записей в LogType.
+            DBManager.WriteLog(logMessage, idLogType);
+        }
+        catch
+        {
+            // Сбой журналирования не должен останавливать синхронизацию сохранений.
         }
     }
 }

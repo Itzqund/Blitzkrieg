@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -10,6 +11,17 @@ namespace BlitzkriegWPF
         public string Theme { get; set; }
         public string Language { get; set; }
         public double Zoom { get; set; } = 1.0;
+        // Эти два свойства оставлены для чтения настроек из старых версий приложения.
+        public Point Location { get; set; }
+        public int[] Size { get; set; }
+
+        // Координаты и размеры окна в обычном, не развёрнутом состоянии.
+        public bool HasWindowPlacement { get; set; }
+        public double WindowLeft { get; set; }
+        public double WindowTop { get; set; }
+        public double WindowWidth { get; set; }
+        public double WindowHeight { get; set; }
+        public bool WasMaximized { get; set; }
     }
 
     public static class AppSettingsService
@@ -55,7 +67,7 @@ namespace BlitzkriegWPF
             }
             catch
             {
-                // Настройки не должны ломать запуск или работу приложения.
+                
             }
         }
     }

@@ -1,5 +1,5 @@
 ﻿BlitzkriegWPF
-
+0.2.0.0
 
 winexe
 C#
@@ -12,8 +12,8 @@ TRACE;DEBUG;NET;NET10_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_O
 C:\Users\qund\source\repos\BlitzkriegWPF\BlitzkriegWPF\App.xaml
 7-1881712453
 
-14-441653263
-210-1715266141
+171090901268
+210-1429568569
 BlueTheme.xaml;CharcoalTheme.xaml;EmeraldTheme.xaml;MainWindow.xaml;Themes\BlueTheme.xaml;Themes\CharcoalTheme.xaml;Themes\EmeraldTheme.xaml;
 
 False

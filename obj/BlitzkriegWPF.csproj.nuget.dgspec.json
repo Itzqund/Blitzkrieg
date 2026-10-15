@@ -5,7 +5,7 @@
   },
   "projects": {
     "C:\\Users\\qund\\source\\repos\\BlitzkriegWPF\\BlitzkriegWPF\\BlitzkriegWPF.csproj": {
-      "version": "0.1.0-alpha",
+      "version": "0.2.0-alpha",
       "restore": {
         "projectUniqueName": "C:\\Users\\qund\\source\\repos\\BlitzkriegWPF\\BlitzkriegWPF\\BlitzkriegWPF.csproj",
         "projectName": "BlitzkriegWPF",
@@ -54,7 +54,7 @@
           "dependencies": {
             "Microsoft.Data.Sqlite.Core": {
               "target": "Package",
-              "version": "[10.0.12, )"
+              "version": "[11.0.0-rc.1.26425.128, )"
             },
             "SQLitePCLRaw.bundle_green": {
               "target": "Package",

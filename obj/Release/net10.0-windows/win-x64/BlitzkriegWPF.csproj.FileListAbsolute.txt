@@ -1,4 +1,3 @@
-C:\Users\qund\source\repos\BlitzkriegWPF\BlitzkriegWPF\bin\Release\net10.0-windows\win-x64\BlitzkriegDB.db
 C:\Users\qund\source\repos\BlitzkriegWPF\BlitzkriegWPF\bin\Release\net10.0-windows\win-x64\BlitzkriegWPF.exe
 C:\Users\qund\source\repos\BlitzkriegWPF\BlitzkriegWPF\bin\Release\net10.0-windows\win-x64\BlitzkriegWPF.deps.json
 C:\Users\qund\source\repos\BlitzkriegWPF\BlitzkriegWPF\bin\Release\net10.0-windows\win-x64\BlitzkriegWPF.runtimeconfig.json

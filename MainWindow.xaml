@@ -5,10 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlitzkriegWPF"
         mc:Ignorable="d"
-        Title="BlitzkriegWPF" Height="650" Width="1050"
+        Title="Блицкриг" Height="650" Width="1050"
         MinWidth="950" MinHeight="550"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
         WindowStyle="None"
-        AllowsTransparency="True"
         Background="{DynamicResource WindowBackgroundBrush}"
         Foreground="{DynamicResource TextPrimaryBrush}"
         FontFamily="Segoe UI"
@@ -17,15 +18,11 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-        <ItemsPanelTemplate x:Key="TwoColumnTablesPanel">
-            <UniformGrid Columns="2"/>
+        <ItemsPanelTemplate x:Key="AdaptiveTablesPanel">
+            <local:AdaptiveTablesPanel IsHorizontal="{Binding IsGeneratorHidden, RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}}"/>
         </ItemsPanelTemplate>
 
-        <ItemsPanelTemplate x:Key="HorizontalTablesPanel">
-            <StackPanel Orientation="Horizontal"/>
-        </ItemsPanelTemplate>
-
-        <!-- Кастомный CheckBox со стилем для мгновенного клика -->
+        <!-- Стиль флажка, чтобы он срабатывал сразу при нажатии -->
         <Style x:Key="CustomCheckBoxStyle" TargetType="CheckBox">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -55,7 +52,7 @@
             </Setter>
         </Style>
 
-        <!-- СТИЛЬ ДЛЯ МЕНЮ -->
+        <!-- Общий стиль меню -->
         <Style TargetType="MenuItem">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
@@ -160,7 +157,7 @@
             <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
         </Style>
 
-        <!-- СТИЛЬ РЕДАКТИРОВАНИЯ ЯЧЕЕК DATAGRID (БЕЗ БЕЛОЙ ПОДСВЕТКИ) -->
+        <!-- Оформление ячеек при редактировании без белой подсветки -->
         <Style x:Key="CleanCellEditingStyle" TargetType="TextBox" BasedOn="{StaticResource DarkTextBoxStyle}">
             <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
@@ -173,12 +170,27 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
+        <Style x:Key="RunEditingStyle" TargetType="TextBox" BasedOn="{StaticResource CleanCellEditingStyle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsStage}" Value="True">
+                    <Setter Property="IsReadOnly" Value="True"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="AttemptsEditingStyle" TargetType="TextBox" BasedOn="{StaticResource CleanCellEditingStyle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsStage}" Value="True">
+                    <Setter Property="IsReadOnly" Value="True"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <!-- При начале редактирования заметки не заставляем DataGrid автоматически
              проматываться вправо к редактируемой ячейке. Пользователь сам управляет
-             горизонтальной прокруткой. -->
+             горизонтальной прокруткой. Заметки можно редактировать и у этапов. -->
         <Style x:Key="NoteEditingStyle" TargetType="TextBox" BasedOn="{StaticResource CleanCellEditingStyle}"/>
 
-        <!-- ТОНКИЕ ПОЛЗУНКИ SCROLLBAR (6px) -->
+        <!-- Узкие полосы прокрутки шириной 6 пикселей -->
         <Style x:Key="ScrollBarThumbStyle" TargetType="Thumb">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="IsTabStop" Value="False"/>
@@ -255,7 +267,7 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Стилизация DataGrid c выделением границей таблицы вместо белой -->
+        <!-- Таблица выделяется границей, а не белой заливкой -->
         <Style TargetType="DataGridRow">
             <Setter Property="Height" Value="26"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -310,7 +322,7 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
 
-        <!-- ШАБЛОН ДИНАМИЧЕСКОЙ ТАБЛИЦЫ УРОВНЯ -->
+        <!-- Шаблон таблицы уровня -->
         <DataTemplate DataType="{x:Type local:LevelTableViewModel}">
             <Border Width="{Binding TableWidth, RelativeSource={RelativeSource AncestorType=Window}}" 
                     Margin="6,0,6,0" 
@@ -326,7 +338,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Шапка таблицы с редактированием названия и кнопкой удаления -->
+                    <!-- В заголовке таблицы можно изменить название или удалить её -->
                     <Grid Grid.Row="0" Margin="0,0,0,6">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -335,11 +347,11 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Кнопка Влево (Только при скрытом генераторе) -->
+                        <!-- Переместить таблицу влево, когда генератор скрыт -->
                         <Button Grid.Column="0" Content=" ◀ " Click="MoveTableLeft_Click" Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" FontSize="10"
                                 Visibility="{Binding DataContext.IsGeneratorHidden, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-                        <!-- Переименование по двойному клику (Заблокирован вертикальный скролл) -->
+                        <!-- Название меняется двойным щелчком; вертикальная прокрутка при этом отключена -->
                         <Border Grid.Column="1" Background="{DynamicResource ControlBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Height="26" Margin="6,0" CornerRadius="4"
                                 MouseLeftButtonDown="LevelName_MouseLeftButtonDown">
                             <Grid>
@@ -374,46 +386,48 @@
                             </Grid>
                         </Border>
 
-                        <!-- Кнопка Удаления (Только при скрытом генераторе) -->
+                        <!-- Удалить таблицу, когда генератор скрыт -->
                         <Button Grid.Column="2" Content=" ✕ " Click="DeleteTable_Click" Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" FontSize="10" Foreground="#EF4444" Margin="0,0,6,0"
                                 Visibility="{Binding DataContext.IsGeneratorHidden, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-                        <!-- Кнопка Вправо (Только при скрытом генераторе) -->
+                        <!-- Переместить таблицу вправо, когда генератор скрыт -->
                         <Button Grid.Column="3" Content=" ▶ " Click="MoveTableRight_Click" Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" FontSize="10"
                                 Visibility="{Binding DataContext.IsGeneratorHidden, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     </Grid>
 
-                    <!-- DataGrid с мгновенными галочками, темным редактированием и скроллом -->
+                    <!-- Таблица с быстрым переключением отметок, тёмным редактором и прокруткой -->
                     <DataGrid Grid.Row="1" ItemsSource="{Binding Runs}" AutoGenerateColumns="False" MinHeight="180"
+                              Loaded="TableDataGrid_Loaded" SizeChanged="TableDataGrid_SizeChanged"
+                              GotKeyboardFocus="TableDataGrid_GotKeyboardFocus"
                               ScrollViewer.HorizontalScrollBarVisibility="Visible"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                               ScrollViewer.CanContentScroll="False"
                               ScrollViewer.ScrollChanged="DataGrid_ScrollChanged">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Width="80" Binding="{Binding Run, UpdateSourceTrigger=PropertyChanged}" EditingElementStyle="{StaticResource CleanCellEditingStyle}">
+                            <DataGridTextColumn Width="80" CanUserResize="True" Binding="{Binding Run, UpdateSourceTrigger=PropertyChanged}" EditingElementStyle="{StaticResource RunEditingStyle}">
                                 <DataGridTextColumn.Header>
                                     <TextBlock Text="{DynamicResource Str_ColumnRun}"/>
                                 </DataGridTextColumn.Header>
                             </DataGridTextColumn>
 
-                            <DataGridTemplateColumn Width="45">
+                            <DataGridTemplateColumn Width="45" MinWidth="45" MaxWidth="45" CanUserResize="False">
                                 <DataGridTemplateColumn.Header>
                                     <TextBlock Text="✓"/>
                                 </DataGridTemplateColumn.Header>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CustomCheckBoxStyle}"/>
+                                        <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanToggle}" Style="{StaticResource CustomCheckBoxStyle}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTextColumn Width="80" Binding="{Binding Attempts, UpdateSourceTrigger=PropertyChanged}" EditingElementStyle="{StaticResource CleanCellEditingStyle}">
+                            <DataGridTextColumn Width="80" CanUserResize="True" Binding="{Binding Attempts, UpdateSourceTrigger=PropertyChanged}" EditingElementStyle="{StaticResource AttemptsEditingStyle}">
                                 <DataGridTextColumn.Header>
                                     <TextBlock Text="{DynamicResource Str_ColumnAttempts}"/>
                                 </DataGridTextColumn.Header>
                             </DataGridTextColumn>
 
-                            <DataGridTextColumn Width="400" Binding="{Binding Note, UpdateSourceTrigger=PropertyChanged}" EditingElementStyle="{StaticResource NoteEditingStyle}">
+                            <DataGridTextColumn Width="400" CanUserResize="False" Binding="{Binding Note, UpdateSourceTrigger=PropertyChanged}" EditingElementStyle="{StaticResource NoteEditingStyle}">
                                 <DataGridTextColumn.Header>
                                     <TextBlock x:Name="NotesHeaderTextBlock" Text="{DynamicResource Str_ColumnNote}" HorizontalAlignment="Center"/>
                                 </DataGridTextColumn.Header>
@@ -435,7 +449,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- ШАПКА -->
+            <!-- Верхняя панель окна -->
             <Grid Grid.Row="0" Background="{DynamicResource ControlBackgroundBrush}" MouseLeftButtonDown="WindowHeader_MouseLeftButtonDown">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -444,13 +458,17 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="Blitzkrieg v0.1.0-alpha" Foreground="{DynamicResource TextPrimaryBrush}" 
+                <TextBlock Grid.Column="0" Text="Blitzkrieg v0.2.0-alpha" Foreground="{DynamicResource TextPrimaryBrush}" 
                            VerticalAlignment="Bottom" Margin="12,0,10,8" FontWeight="Bold" FontSize="12"/>
 
-                <!-- МЕНЮ -->
+                <!-- Меню приложения -->
                 <Menu x:Name="AppMenu" Grid.Column="1" Background="Transparent" Foreground="{DynamicResource TextPrimaryBrush}" 
                       VerticalAlignment="Center" Padding="0" WindowChrome.IsHitTestVisibleInChrome="True">
-                    <MenuItem x:Name="SavesToggleMenuItem" Header="{DynamicResource Str_Saves}" Click="SavesToggle_Click"/>
+                    <MenuItem Header="{DynamicResource Str_Data}">
+                        <MenuItem Header="{DynamicResource Str_Import}" Click="Import_Click"/>
+                        <MenuItem Header="{DynamicResource Str_Export}" Click="Export_Click"/>
+                    </MenuItem>
+                        <MenuItem x:Name="SavesToggleMenuItem" Header="{DynamicResource Str_Saves}" Click="SavesToggle_Click"/>
                     <MenuItem Header="{DynamicResource Str_Guide}"/>
                     <MenuItem Header="{DynamicResource Str_Settings}">
                         <MenuItem Header="{DynamicResource Str_Theme}">
@@ -467,7 +485,7 @@
                     <MenuItem Header="{DynamicResource Str_About}"/>
                 </Menu>
 
-                <!-- УПРАВЛЕНИЕ МАСШТАБОМ И КНОПКИ ОКНА -->
+                <!-- Масштаб интерфейса и кнопки управления окном -->
                 <StackPanel Grid.Column="3" Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,6,0">
                         <Button Width="26" Height="24" Content="-" Click="ZoomOut_Click" Style="{StaticResource RoundedButtonStyle}" Margin="2,0" ToolTip="Уменьшить масштаб (Ctrl + -)"/>
@@ -518,7 +536,7 @@
                 </StackPanel>
             </Grid>
 
-            <!-- РАБОЧАЯ ОБЛАСТЬ -->
+            <!-- Основная рабочая область -->
             <Grid Grid.Row="1" Margin="12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="LeftColumn" Width="260"/>
@@ -526,7 +544,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- ЛЕВАЯ ПАНЕЛЬ (ГЕНЕРАТОР) -->
+                <!-- Левая панель с генератором -->
                 <Grid x:Name="GeneratorPanel" Grid.Column="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -586,7 +604,7 @@
                     </UniformGrid>
                 </Grid>
 
-                <!-- ПРАВАЯ ПАНЕЛЬ С ТАБЛИЦАМИ -->
+                <!-- Правая панель с таблицами -->
                 <Border Background="{DynamicResource PanelBackgroundBrush}" CornerRadius="8" Padding="10" Grid.Column="2">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -594,7 +612,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Текстовый тулбар -->
+                        <!-- Панель с действиями для текста -->
                         <Border Grid.Row="0" Background="{DynamicResource ControlBackgroundBrush}" CornerRadius="6" Padding="6,4" Margin="0,0,0,10" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Button Content=" &lt; " Style="{StaticResource RoundedButtonStyle}" Width="26" Height="24" Margin="2,0"/>
@@ -613,7 +631,7 @@
                         </Border>
 
                         <ScrollViewer x:Name="TableScrollViewer" Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" Padding="0,0,0,4">
-                            <ItemsControl x:Name="TablesItemsControl" ItemsPanel="{StaticResource TwoColumnTablesPanel}"/>
+                            <ItemsControl x:Name="TablesItemsControl" ItemsPanel="{StaticResource AdaptiveTablesPanel}"/>
                         </ScrollViewer>
 
                     </Grid>
