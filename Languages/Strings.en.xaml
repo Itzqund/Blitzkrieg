@@ -3,24 +3,24 @@
     <sys:String x:Key="Str_About" xmlns:sys="clr-namespace:System;assembly=mscorlib">About</sys:String>
     <sys:String x:Key="Str_ColumnAttempts" xmlns:sys="clr-namespace:System;assembly=mscorlib">Attempts</sys:String>
     <sys:String x:Key="Str_ColumnNote" xmlns:sys="clr-namespace:System;assembly=mscorlib">Note</sys:String>
-    <sys:String x:Key="Str_ColumnRun" xmlns:sys="clr-namespace:System;assembly=mscorlib">Run</sys:String>
-    <sys:String x:Key="Str_CopyPoses" xmlns:sys="clr-namespace:System;assembly=mscorlib">Copy start positions</sys:String>
+    <sys:String x:Key="Str_ColumnRun" xmlns:sys="clr-namespace:System;assembly=mscorlib">Runs</sys:String>
+    <sys:String x:Key="Str_CopyPoses" xmlns:sys="clr-namespace:System;assembly=mscorlib">Copy startposes</sys:String>
     <sys:String x:Key="Str_CopyStages" xmlns:sys="clr-namespace:System;assembly=mscorlib">Copy blitzkrieg</sys:String>
     <sys:String x:Key="Str_Data" xmlns:sys="clr-namespace:System;assembly=mscorlib">Data</sys:String>
     <sys:String x:Key="Str_DeleteAll" xmlns:sys="clr-namespace:System;assembly=mscorlib">Delete all</sys:String>
     <sys:String x:Key="Str_Export" xmlns:sys="clr-namespace:System;assembly=mscorlib">Export save...</sys:String>
     <sys:String x:Key="Str_Guide" xmlns:sys="clr-namespace:System;assembly=mscorlib">Guide</sys:String>
-    <sys:String x:Key="Str_Import" xmlns:sys="clr-namespace:System;assembly=mscorlib">Link mod save...</sys:String>
+    <sys:String x:Key="Str_Import" xmlns:sys="clr-namespace:System;assembly=mscorlib">Import save...</sys:String>
     <sys:String x:Key="Str_LangEn" xmlns:sys="clr-namespace:System;assembly=mscorlib">English</sys:String>
     <sys:String x:Key="Str_LangRu" xmlns:sys="clr-namespace:System;assembly=mscorlib">Russian</sys:String>
     <sys:String x:Key="Str_Language" xmlns:sys="clr-namespace:System;assembly=mscorlib">Language</sys:String>
     <sys:String x:Key="Str_MakeStages" xmlns:sys="clr-namespace:System;assembly=mscorlib">Create blitzkrieg</sys:String>
-    <sys:String x:Key="Str_PastePoses" xmlns:sys="clr-namespace:System;assembly=mscorlib">Paste start positions</sys:String>
+    <sys:String x:Key="Str_PastePoses" xmlns:sys="clr-namespace:System;assembly=mscorlib">Paste startposes</sys:String>
     <sys:String x:Key="Str_Saves" xmlns:sys="clr-namespace:System;assembly=mscorlib">Saves</sys:String>
     <sys:String x:Key="Str_Settings" xmlns:sys="clr-namespace:System;assembly=mscorlib">Settings</sys:String>
     <sys:String x:Key="Str_Stages" xmlns:sys="clr-namespace:System;assembly=mscorlib">Stages</sys:String>
-    <sys:String x:Key="Str_StartPoses" xmlns:sys="clr-namespace:System;assembly=mscorlib">Start positions</sys:String>
-    <sys:String x:Key="Str_Theme" xmlns:sys="clr-namespace:System;assembly=mscorlib">Theme</sys:String>
+    <sys:String x:Key="Str_StartPoses" xmlns:sys="clr-namespace:System;assembly=mscorlib">Startposes</sys:String>
+    <sys:String x:Key="Str_Theme" xmlns:sys="clr-namespace:System;assembly=mscorlib">Themes</sys:String>
     <sys:String x:Key="Str_ThemeBlue" xmlns:sys="clr-namespace:System;assembly=mscorlib">Midnight blue</sys:String>
     <sys:String x:Key="Str_ThemeCharcoal" xmlns:sys="clr-namespace:System;assembly=mscorlib">Charcoal</sys:String>
     <sys:String x:Key="Str_ThemeEmerald" xmlns:sys="clr-namespace:System;assembly=mscorlib">Emerald</sys:String>
