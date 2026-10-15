@@ -2,25 +2,25 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <sys:String x:Key="Str_About" xmlns:sys="clr-namespace:System;assembly=mscorlib">О программе</sys:String>
     <sys:String x:Key="Str_ColumnAttempts" xmlns:sys="clr-namespace:System;assembly=mscorlib">Попытки</sys:String>
-    <sys:String x:Key="Str_ColumnNote" xmlns:sys="clr-namespace:System;assembly=mscorlib">Заметка</sys:String>
-    <sys:String x:Key="Str_ColumnRun" xmlns:sys="clr-namespace:System;assembly=mscorlib">Ран</sys:String>
+    <sys:String x:Key="Str_ColumnNote" xmlns:sys="clr-namespace:System;assembly=mscorlib">Заметки</sys:String>
+    <sys:String x:Key="Str_ColumnRun" xmlns:sys="clr-namespace:System;assembly=mscorlib">Раны</sys:String>
     <sys:String x:Key="Str_CopyPoses" xmlns:sys="clr-namespace:System;assembly=mscorlib">Скопировать стартпозы</sys:String>
     <sys:String x:Key="Str_CopyStages" xmlns:sys="clr-namespace:System;assembly=mscorlib">Скопировать блицкриг</sys:String>
     <sys:String x:Key="Str_Data" xmlns:sys="clr-namespace:System;assembly=mscorlib">Данные</sys:String>
     <sys:String x:Key="Str_DeleteAll" xmlns:sys="clr-namespace:System;assembly=mscorlib">Удалить всё</sys:String>
     <sys:String x:Key="Str_Export" xmlns:sys="clr-namespace:System;assembly=mscorlib">Экспорт сохранения...</sys:String>
-    <sys:String x:Key="Str_Guide" xmlns:sys="clr-namespace:System;assembly=mscorlib">Руководство</sys:String>
-    <sys:String x:Key="Str_Import" xmlns:sys="clr-namespace:System;assembly=mscorlib">Привязать сохранение мода...</sys:String>
+    <sys:String x:Key="Str_Guide" xmlns:sys="clr-namespace:System;assembly=mscorlib">Гайд</sys:String>
+    <sys:String x:Key="Str_Import" xmlns:sys="clr-namespace:System;assembly=mscorlib">Импорт сохранения...</sys:String>
     <sys:String x:Key="Str_LangEn" xmlns:sys="clr-namespace:System;assembly=mscorlib">Английский</sys:String>
     <sys:String x:Key="Str_LangRu" xmlns:sys="clr-namespace:System;assembly=mscorlib">Русский</sys:String>
-    <sys:String x:Key="Str_Language" xmlns:sys="clr-namespace:System;assembly=mscorlib">Язык</sys:String>
+    <sys:String x:Key="Str_Language" xmlns:sys="clr-namespace:System;assembly=mscorlib">Language</sys:String>
     <sys:String x:Key="Str_MakeStages" xmlns:sys="clr-namespace:System;assembly=mscorlib">Создать блицкриг</sys:String>
     <sys:String x:Key="Str_PastePoses" xmlns:sys="clr-namespace:System;assembly=mscorlib">Вставить стартпозы</sys:String>
-    <sys:String x:Key="Str_Saves" xmlns:sys="clr-namespace:System;assembly=mscorlib">Сохранения</sys:String>
+    <sys:String x:Key="Str_Saves" xmlns:sys="clr-namespace:System;assembly=mscorlib">История</sys:String>
     <sys:String x:Key="Str_Settings" xmlns:sys="clr-namespace:System;assembly=mscorlib">Настройки</sys:String>
-    <sys:String x:Key="Str_Stages" xmlns:sys="clr-namespace:System;assembly=mscorlib">Этапы</sys:String>
-    <sys:String x:Key="Str_StartPoses" xmlns:sys="clr-namespace:System;assembly=mscorlib">Стартовые позиции</sys:String>
-    <sys:String x:Key="Str_Theme" xmlns:sys="clr-namespace:System;assembly=mscorlib">Тема</sys:String>
+    <sys:String x:Key="Str_Stages" xmlns:sys="clr-namespace:System;assembly=mscorlib">Блицкриг</sys:String>
+    <sys:String x:Key="Str_StartPoses" xmlns:sys="clr-namespace:System;assembly=mscorlib">Стартпозы</sys:String>
+    <sys:String x:Key="Str_Theme" xmlns:sys="clr-namespace:System;assembly=mscorlib">Темы</sys:String>
     <sys:String x:Key="Str_ThemeBlue" xmlns:sys="clr-namespace:System;assembly=mscorlib">Полуночный синий</sys:String>
     <sys:String x:Key="Str_ThemeCharcoal" xmlns:sys="clr-namespace:System;assembly=mscorlib">Угольный</sys:String>
     <sys:String x:Key="Str_ThemeEmerald" xmlns:sys="clr-namespace:System;assembly=mscorlib">Изумрудный</sys:String>
